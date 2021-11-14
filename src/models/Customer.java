@@ -5,30 +5,30 @@ import models.enums.CustomerState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Customer  {
-    private  String name;
-    private CustomerState state;
+public class Customer extends Thread {
+    private  String customerName;
+    private String customerState;
     private  int orderNum;
     private List<Order> orderList=new ArrayList<>();
 
     public Customer(String name, List<Order> orderList) {
-        this.name = name;
+        this.customerName = name;
         this.orderList = orderList;
     }
 
-    public String getName() {
-        return name;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCustomerName(String name) {
+        this.customerName = name;
     }
 
-    public CustomerState getState() {
-        return state;
+    public String getCustomerState() {
+        return customerState;
     }
 
-    public void setState(CustomerState state) {
-        this.state = state;
+    public void setCustomerState(String state) {
+        this.customerState = state;
     }
 }
