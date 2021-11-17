@@ -1,20 +1,47 @@
 package models;
 
 import models.enums.CookState;
+import models.enums.OrderState;
+import service.Restaurant;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Cook extends Thread{
     private String cookName;
-    private List<Order> orderList=new ArrayList<>();
-    private  List<Machine> machineList=new ArrayList<>();
+   /* private List<Order> orderList;
+    private  List<Machine> machineList;*/
     private String cookState;
+    private   Restaurant restaurant;
 
-    public Cook(String name, List<Order> orderList, List<Machine> machineList) {
-        this.cookName = name;
-        this.orderList = orderList;
-        this.machineList = machineList;
-        cookState= CookState.COOK_STARTING.getState();
+    public Cook(String cookName, Restaurant restaurant) {
+        this.cookName = cookName;
+        this.restaurant = restaurant;
     }
+
+    public   Order order=new Order();
+
+    public String getCookState() {
+        return cookState;
+    }
+
+    public void setCookState(String cookState) {
+        this.cookState = cookState;
+    }
+
+
+
+    @Override
+    public void run() {
+
+        try {
+           order= restaurant.getOrder(this);
+           restaurant.findMachineAndCook(this);
+           restaurant.getOrderToCustomer(this);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
