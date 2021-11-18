@@ -14,7 +14,7 @@ public class Machine extends Thread {
     private int countUse;
     private Cook cook;
     private Restaurant restaurant;
-   // private List<Order> orderList = new ArrayList<>();
+    // private List<Order> orderList = new ArrayList<>();
 
 
     public Machine(String machineName, String machineFoodType, int capability, Restaurant restaurant) {
@@ -66,40 +66,40 @@ public class Machine extends Thread {
 
     @Override
     public void run() {
-            synchronized (this) {
-                while (restaurant.orderList.isEmpty()) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        synchronized (restaurant.orderList) {
+            while (restaurant.orderList.isEmpty()) {
+                try {
+                    restaurant.orderList.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                while (this.countUse == this.capability) {
-                    try {
-                        System.out.println(machineName + " is full please wait ...");
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            }
+            while (this.countUse == this.capability) {
+                try {
+                    System.out.println(machineName + " is full please wait ...");
+                    restaurant.orderList.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                if (!restaurant.orderList.isEmpty()) {
-                    try {
-                        this.wait(2000);
-                        //orderList.get(Restaurant.searchOrderIndex(cook.order.getOrderNum())).setState(OrderState.COOKED.getState());
-                        cook.order.setState(OrderState.COOKED.getState());
+            if (!restaurant.orderList.isEmpty()) {
+                try {
+                    restaurant.orderList.wait(2000);
+                    //orderList.get(Restaurant.searchOrderIndex(cook.order.getOrderNum())).setState(OrderState.COOKED.getState());
+                    cook.order.setState(OrderState.COOKED.getState());
 
-                        this.setCountUse(this.getCountUse() - 1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-
+                    this.setCountUse(this.getCountUse() - 1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                notifyAll();
 
 
             }
+            restaurant.orderList.notify();
+
+
+        }
         //}
     }
 }
