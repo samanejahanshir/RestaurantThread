@@ -1,14 +1,14 @@
 package models;
 
 public class Order {
-    private  int orderNum;
-    private  String food;
+    private int orderNum;
+    private String food;
     private String state;
 
-    public Order(int orderNum, String food,String state) {
+    public Order(int orderNum, String food, String state) {
         this.orderNum = orderNum;
         this.food = food;
-        this.state=state;
+        this.state = state;
     }
 
     public Order() {
