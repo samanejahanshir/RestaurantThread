@@ -7,19 +7,19 @@ import service.Restaurant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cook extends Thread{
+public class Cook extends Thread {
     private String cookName;
-   /* private List<Order> orderList;
-    private  List<Machine> machineList;*/
+    /* private List<Order> orderList;
+     private  List<Machine> machineList;*/
     private String cookState;
-    private   Restaurant restaurant;
+    private Restaurant restaurant;
 
     public Cook(String cookName, Restaurant restaurant) {
         this.cookName = cookName;
         this.restaurant = restaurant;
     }
 
-    public   Order order=new Order();
+    public Order order = new Order();
 
     public String getCookState() {
         return cookState;
@@ -30,14 +30,19 @@ public class Cook extends Thread{
     }
 
 
-
     @Override
     public void run() {
 
         try {
-           order= restaurant.getOrder(this);
-           restaurant.findMachineAndCook(this);
-           restaurant.getOrderToCustomer(this);
+            order = restaurant.getOrder(this);
+            Machine machine = restaurant.findMachineAndCook(this);
+            synchronized (machine) {
+                if (machine != null) {
+                    machine.start();
+                }
+            }
+            machine.join();
+            restaurant.getOrderToCustomer(this);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
